@@ -1,0 +1,22 @@
+---
+title: "Learn_R"
+author: "Jessie Berta-Thompson"
+date: "February 8, 2018"
+output: html_document
+---
+##R
+Use this document to run examples from "The Book of R" so that I can do more intentional R learning. 
+30 minutes per gardens day.
+
+
+Customize the prompt?
+you can replace the prompt in the console ">" with anything
+The Book of R likes to change it to ">R "
+I might like project-specific or encouraging ones.
+```{r}
+options(prompt="R> ")
+options(prompt = "Hooray!")
+#I think I like vanilla for now, but I like the idea of positivity and customization! could be useful when using multiple code platforms & taking notes.
+options(prompt="> ")
+```
+
