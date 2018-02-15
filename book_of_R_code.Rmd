@@ -8,7 +8,9 @@ output: html_document
 Use this document to run examples from "The Book of R" so that I can do more intentional R learning. 
 30 minutes per gardens day.
 
+This lives in a git repository on the DBG Q drive under "Learn_R/" - so push it at the end of each day's progress!
 
+#Section 1.2 Opening R for the first time (page 4)
 Customize the prompt?
 you can replace the prompt in the console ">" with anything
 The Book of R likes to change it to ">R "
@@ -20,3 +22,55 @@ options(prompt = "Hooray!")
 options(prompt="> ")
 ```
 
+Up to a previous line of code on command line - arrow up, and arrow down to get back to more recent. 
+Ctrl-shift-enter runs the whole chunk of code.
+Ctrl-enter runs just line with cursor, or a highlighted section.
+
+** skipped to Rstudio appendix of book pg 784 to get more customization tricks (main text uses base R console/editor)
+Tools -> Global Options 
+
+# how to comment in R
+```{r}
+#comments can go here
+1+1 #comments can go here
+
+```
+
+# Working directory
+This is where it looks for files on import and saves to, unless path specificied.
+```{r}
+#Check and see what the working directory is
+getwd()
+
+#If you've just opened a .Rmd it seems to set the wd to where it resides.
+
+#Change the working directory to one level higher than where this lives
+setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/")
+
+getwd()
+
+setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R")
+
+
+```
+
+This is slightly complicated in chunks. on the whole, just use paths carefully. 
+Sometimes fine to use working directory if all the contents of a project in one place
+When more complicated, better to specify paths. 
+Good to check in on working directory to make sure you're where you think you are.
+
+
+Rstudio - there's supposed to be something like this to change working directory for this chunk and all others subsequent to run.
+```{r setup}
+knitr::opts_knit$set(root.dir = "Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/")
+
+```
+
+but I can't get it to work. 
+
+What does work is entering command in the console directly. 
+setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/")
+setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R/")
+
+Usefully, the current working directory is shown at the top of the Console pane in Rstudio.
+You can also change it in gui menu Session -> Set Working Directory

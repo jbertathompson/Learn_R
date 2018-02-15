@@ -1,0 +1,8 @@
+cd  - for change directory
+cd without anything after it prints current working directory (pwd)
+\ - for separating directories in a hierarchy (/)
+tab - autofill (same)
+copy source destination - copies files (cp)
+dir - ls in unix, list files in current directory
+mkdir - mkdir
+ren - rename a file (~mv)
