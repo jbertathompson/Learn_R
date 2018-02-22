@@ -10,6 +10,9 @@ Use this document to run examples from "The Book of R" so that I can do more int
 
 This lives in a git repository on the DBG Q drive under "Learn_R/" - so push it at the end of each day's progress!
 
+*** Do this at beginning of sessions in this workbook **
+setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R/")
+
 #Section 1.2 Opening R for the first time (page 4)
 Customize the prompt?
 you can replace the prompt in the console ">" with anything
@@ -51,7 +54,6 @@ getwd()
 
 setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R")
 
-
 ```
 
 This is slightly complicated in chunks. on the whole, just use paths carefully. 
@@ -68,9 +70,67 @@ knitr::opts_knit$set(root.dir = "Q:/Research/All_Projects_by_Species/Phacelia SP
 
 but I can't get it to work. 
 
-What does work is entering command in the console directly. 
+What does work is entering command in the console directly. After doing that, it applies to chunks. 
 setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/")
 setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R/")
+Added this to beginning of document as warmup.
 
 Usefully, the current working directory is shown at the top of the Console pane in Rstudio.
 You can also change it in gui menu Session -> Set Working Directory
+
+#Installing and loading R packages (1.2.4 pg 7)
+There are lots of built-in commands for calculations, stats and plotting.
+There are lots more in packages or libraries.
+Some packages come with the base R distribution (no need to install) but need to be loaded for use/access to functions by calling library():
+```{r}
+library("MASS")
+```
+Packages need to be reloaded for each R session.
+
+Other packages need to be downloaded and installed, from a repository, usually CRAN (The Comprehensive R Archive Network).
+With an internet connection, this can be done with install.packages().
+ks (kernel smoother, for multivariate and univariate data) will be used later in this book. 
+Executing the install command will connect to local CRAN mirror and download and install the ks package and other pakcages it uses (dependencies)
+```{r}
+install.packages("ks")
+
+```
+This step you only have to do once. Notice quotes in commands above - feed it name of package as string.
+Now load the new package
+```{r}
+library("ks")
+
+```
+That one threw a warning/message:
+package ???ks??? was built under R version 3.4.3
+
+Which made me curious about my current R version. Check on that with this command:
+
+```{r}
+version
+
+```
+
+There are newer versions from:
+https://www.r-project.org/
+current is:
+3.4.3
+But I had trouble installing without permissions. 
+Try again?
+If I ignore one warning about associating Rdata with R version, then it works. 
+To get R studio to see it, you have to restart Rstudio. (did that, it worked! we got 3.4.3)
+
+To keep everything in best possible working order, a single command can be used to check all installed packages for more recent updates:
+```{r}
+update.packages()
+```
+
+This took awhile - my first time running it on this computer. 
+You have to look at console and respond (y) to updating each package.
+(not sure what c in y/n/c response options means)
+
+pick up next time on page 8, 1.2.5 help files. 
+
+
+
+
