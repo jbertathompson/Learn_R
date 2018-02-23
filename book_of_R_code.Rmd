@@ -130,7 +130,53 @@ You have to look at console and respond (y) to updating each package.
 (not sure what c in y/n/c response options means)
 
 pick up next time on page 8, 1.2.5 help files. 
+2.23.18
 
+R is full of help files (e.g. to understand function arguments)
+There are a few ways to get at them. 
 
+```{r}
+#these are the same. ? is a short cut for help. This brings up a help file (a different panel in Rstudio, help window in base R console)
+#this acts on a specific known function to pull the help file
+help(mean)
+?mean
 
+#If you don't know the specific function, but want to search help in English across all installed packages
+# pass a string with search term of interest to help.search()
+help.search("mean")
+#this one also has a shortcut
+??"mean"
 
+#results are listed as library::function
+```
+
+Function help files usually include a 
+description of what it does
+usage on how to set up arguments and what defaults are -  shown with "=" to set. 
+arguments - info about what you pass to the function
+value - info on what function returns
+references
+related help files
+examples - often you can copy and paste them into console to see what they do
+Warnings - common mistakes
+Details - more
+Notes - more
+
+These are hard to read at first, but book of R says to try learning to read them easily!
+So, look at a few more...
+```{r}
+#install.packages("ggplot2")
+#library(ggplot2)
+??"ggplot"
+?gc
+gc(verbose=getOption("verbose"))
+gcinfo(TRUE)
+?read.table
+```
+
+Then the book does a shoutout to RStudio
+it has a "direct-submission code editor"
+Might be nice to learn about standalone R code files sometime, in addition to this markdown way of working. 
+See Rstudio appendix (could work through that section soon)
+
+left off at section 1.3 pg 11, Saving work and Exiting R. 
