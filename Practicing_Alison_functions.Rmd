@@ -1,0 +1,610 @@
+---
+title: "Practicing Alison's list of useful R functions"
+author: "Jessie Berta-Thompson"
+date: "March 1, 2018"
+output: html_document
+---
+
+For todays 30 minutes of R studying, I want to look at the file Alison sent me - where she made a list of useful R functions when they came up, stored in one place for reference. She sent me a .R script, and I'll copy a chunk at a time to think about here. 
+
+#My usual set up stuff
+```{r}
+rm(list=ls()) #clears environment
+gc() #garbage collect prompts R to free up memory
+getwd() #print working directory, where files will be looked for and created if full path not specified
+#setwd() #if necessary, change working directory
+```
+
+
+# R functions
+```{r}
+# load libraries
+library(ggplot2) #plotting tools!
+#library() loads a library from installed packages
+#but what does "require()" do?
+?require
+#install.packages("reshape") #i didn't have one of these, reshape, which I know Michelle uses, too, to melt tables for ggplot. I lost a lot of installed packages when I updated R version, but now they're coming back better than ever. 
+require(reshape)#reorganizing data!
+require(scales)# help only says "generic plot scaling methods" - maybe a ggplot dependency/improver
+library(plyr) # help calls it "the split-apply-combine paradigm for R" - a way of analyzing data (in that order)
+#dd_ply takes in a dataframe, outputs a dataframe
+#l_ply takes in a list, outputs nothing
+#handy helper functions also included, like "colwise" to operate a function on columns of a dataframe, "rename" to rename columns more easily, "arrange" to reorder rows of a dataframe based on given columns to order by. 
+```
+
+Require and library both "load and attach add-on packages"
+"Require is designed for use inside other functions; it returns FALSE and gives a warning (rather than an error as library() does by default) if the package does not exist."  So they're similar, but require is more forgiving of a failure to find a package. 
+
+I've seen plyr in stack overflow a lot, but I don't think I've been using. Now I know what it is, it might help with some data wrangling frustrations to have it in my toolkit.
+
+
+# get / set path, working directory
+```{r}
+getwd()
+dir <- "Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R"
+setwd(dir)
+```
+
+I know these ones! But remember things get weird with Rstudio, sometimes you have to set it in Console, not chunks:
+> setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R")
+
+
+I'll add this while I'm thinking about it (and looking for a test file)
+```{r}
+list.files() #ls for files in working directory
+#list.dirs() # this one didn't work - slow, not worth waiting for
+```
+
+
+#Working with data!
+I think to practice these I need a datafile to read in. Copied a strataG pairwise results table to near here (for phacelia data, split into 4 clusters)
+
+```{r}
+# read difficult table
+#df0 <- read.table(f,header=T, sep='\t', na.strings = "NA", comment.char="", quote="")
+f = "phacelia_strataG_pairwise_test_results_by_cluster_k4.txt"
+df0 <- read.table(f, header = T, sep = ',', na.strings = "NA", comment.char="", quote="")
+# function reads in tabular data from files
+# f is file to read (first in function)
+# header = T tells it that the datafile has a header row, which becomes column names in the dataframe
+# sep = ',' mine happens to be a CSV, but sometimes I'd use tabs or it might be useful to split on something weird.
+# na.strings= "NA" takes in a character vector of strings to be interpreted as NA values. Blank fields are also treated as missing values in logical, interger, numeric and complex fields. This happens after white space is stripped. For my test files, this worked automatically or with option added. 
+# comment.char = "" From help, "character: a character vector of length one containing a single character or an empty string. Use "" to turn off the interpretation of comments altogether." neat - maybe I could have complicated comments (with commas?) alongside data files. Not sure how this would then deal with the information that something's a comment
+# quote="" from help "the set of quoting characters. To disable quoting altogether, use quote = "". See scan for the behaviour on quotes embedded in quotes. Quoting is only considered for columns read as character, which is all of them unless colClasses is specified."
+
+
+# And finally, this produces a dataframe object in R, in this case stored in the variable "df0"
+
+#left to it's own devices?
+#minimum needed to get this working
+df1 <- read.table(f, header = T, sep = ",") # and this actually better handling (no weird quotes)
+
+
+```
+
+
+
+
+
+Next up! (same topic)
+
+# read matrix
+countData_aft <- as.matrix(read.table(counts_table_file, sep="\t", header=TRUE))
+
+# Change colnames
+colnames(df)[2]  <- c('condition')
+
+# make toy matrix
+ M <- cbind(1:3, 4:6, 7:9, 10:12)
+ 
+# make a data frame (like a table, but all columns can be labelled, I think..)
+> locusID <- c('geneA', 'geneB', 'geneB')
+> totalcount <- c(5, 8, 146)
+> insertion <- c(5500, 7000,  7001)
+> df = data.frame(locusID, insertion, totalcount)
+> df
+  locusID insertion totalcount
+1   geneA      5500          5
+2   geneB      7000          8
+3   geneB      7001        146
+
+
+
+
+
+Then! (the rest of Alison's file)
+
+
+
+#------subset
+
+# get the row that matches a value or condition
+df[df$insertion == 1, ]
+
+# count the number of rows that match a condition
+sum(dataFrame$a == 5 & dataFrame$b > 3, na.rm=TRUE)
+
+# subset data
+subnz <-  subset(df, df$zeroor == 'nonzero', select = c(insertion, ratio_of_insertion_frequencies)) #subnz = subset of non-zero ratios
+df <- subset(df, df$num_unique_ins>5 & df$cpm > 0, select = c(geneid, num_unique_ins, geneann, cpm, avg_counts, var_counts)
+
+# extract specific columns of a data frame
+df[,c("A","B","E")]
+
+# search for string matches to in column names, extract those columns
+dall.annot[,sapply(colnames(dall.annot), function (x) grepl('padj', x))]
+
+# Excise rows where values in specific columns meet a certain cutoff, for instance padj <0.05
+df_sig <- dpadj.annot[apply(dpadj.annot[,4:10], MARGIN = 1, function(x) any(x < 0.05)), ] 
+
+
+# take first few rows
+df_small <- df[1:10,]
+
+# subset rows that match a vector of labels / values (l is list of interest, vec is vector of values)
+l[l == vec,]
+
+# test if each value matches (true / false)
+l == vec
+
+# MATCH values to queries, add a value if they match, a different value if they don't,  in a new column
+queries$new.column  <- c('no_match.value','match.value')[(values %in% queries$query.column)+1]
+
+# take specific columns (by column index number)
+df[, -c(3, 5)] # all but the third and fifth columns
+df[, c(1:8, 14:15)]
+
+# Remove rows with NA
+na.omit(df)
+
+#-----merge or union data frames
+# merge data.frames on common ids
+merge(df1, df2, by='CustomerId')
+df1 = data.frame(CustomerId=c(1:6),Product=c(rep("Toaster",3),rep("Radio",3)))
+df2 = data.frame(CustomerId=c(2,4,6),State=c(rep("Alabama",2),rep("Ohio",1)))
+
+> df1
+  CustomerId Product
+           1 Toaster
+           2 Toaster
+           3 Toaster
+           4   Radio
+           5   Radio
+           6   Radio
+
+> df2
+  CustomerId   State
+           2 Alabama
+           4 Alabama
+           6    Ohio
+
+Inner join: merge(df1, df2) will work for these examples because R automatically joins the frames by common variable names, but you would most likely want to specify merge(df1, df2, by="CustomerId") to make sure that you were matching on only the fields you desired. You can also use the by.x and by.y parameters if the matching variables have different names in the different data frames.
+> merge(df1, df2)
+  CustomerId Product   State
+1          2 Toaster Alabama
+2          4   Radio Alabama
+3          6   Radio    Ohio
+
+Outer join: merge(x = df1, y = df2, by = "CustomerId", all = TRUE)
+  CustomerId Product   State
+1          1 Toaster    <NA>
+2          2 Toaster Alabama
+3          3 Toaster    <NA>
+4          4   Radio Alabama
+5          5   Radio    <NA>
+6          6   Radio    Ohio
+
+Left outer: merge(x = df1, y = df2, by = "CustomerId", all.x=TRUE)
+  CustomerId Product   State
+1          1 Toaster    <NA>
+2          2 Toaster Alabama
+3          3 Toaster    <NA>
+4          4   Radio Alabama
+5          5   Radio    <NA>
+6          6   Radio    Ohio
+
+Right outer: merge(x = df1, y = df2, by = "CustomerId", all.y=TRUE)
+  CustomerId Product   State
+1          2 Toaster Alabama
+2          4   Radio Alabama
+3          6   Radio    Ohio
+
+Cross join: merge(x = df1, y = df2, by = NULL)
+
+
+#-----other dataframe manip
+#do math on group
+	#using the aggregate function, pull out data you want to compute something on (all columns except first 7: 'all_g2[,-(1,7)]'), specify the grouping (all_g$locusId), and do something to it (sum)
+all_gN = aggregate(all_g2[,-(1:7)], list(locusId=all_g2$locusId), sum);
+
+# paste together two columns to make new column
+	expsUsed$t0set = paste(expsUsed$Date_pool_expt_started, expsUsed$Set)
+
+# bind columns into one dataframe
+all.cols <- cbind(dfrm1, dfrm2)
+
+
+#-------apply functions
+
+# calculate the mean on matrix, m, by row (2, whereas if by column, 1).
+apply(m, 2, mean)
+
+# for each column, after the first column (locusId), take median
+medians <- apply(merged[,-1], 1, median)
+
+
+#--------sweep function
+
+# divide each number in a column, by a number in a vector
+sweep(df[,-1], 2, vec, '/') # where df[,-1] avoids the first column, and 2 means by columns, and vec has the numbers in a vector, and '/' means to divide.
+
+#------conditional 
+
+#if else
+ifelse(x<0, 'lessthan0', 'morethan0')
+
+
+#----plot
+
+# label lines
+#Create a subset of data that you want to label. Here we label points a - e
+labeled.df <- subset(df, df$variable == 'more_than_3_counts')
+# label it
+ggplot(df, aes(x,y)) + geom_point() +
+  geom_text(data = labeled.df, aes(x,y, label = label), hjust = 2)
+
+# plot single line with points
+g0 <- ggplot(df, aes(x = sample, y = total_unique_insertions, group = 1))
+
+# plot histogram
+g0 <- ggplot(df, aes(ratio_s8_s1))
+g1 <- g0 + geom_histogram(binwidth=0.1)
+
+# plot overlaid histograms
+g0 <- ggplot(df, aes(num_unique_insertions, fill=factor(df$essential)))
+g1 <- g0 + geom_histogram(binwidth = 1, alpha=0.2)
+
+# add 1:1 line to plot
+g2 <- g1 + geom_abline(intercept = 0, slope = 1, linetype = 'dashed', colour = 'grey')
+
+# plot facets
+qplot(data=df, x=BM, y=var, log='xy', color=Tribe, facets = ~Tribe)
+p <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+# With one variable
+p + facet_grid(. ~ cyl)
+
+# melt data
+library(reshape)
+mdata <- melt(mydata, id=c("id","time"))
+http://www.statmethods.net/management/reshape.html
+
+# take mean, standard deviation, standard error, etc. Use library(plyr)
+#http://www.cookbook-r.com/Manipulating_data/Summarizing_data/ << so useful!
+dfc <- ddply(df, c('sample.type', 'time'),  # specify the things you want to take the means of; in this case, over same sample.type (like Fucus.biofilm) at the same times (e.g. 6 hrs) 
+	summarise, # not sure what this does
+	N = length(CFU_per_mL), # will calculate the number of data points for a given sample.type+time combo
+	mean = mean(CFU_per_mL), # will calculate mean
+	sd = sd(CFU_per_mL), # will calculate standard deviation
+	se = sd / sqrt(N) ) # will calculate standard error
+
+# color data points and connecting lines by category (x-axis is categorical data, and y-axis is continuous)
+g0 <- ggplot(df, aes(x = variable, y = value, color = sample, group = sample))
+g1 <- g0 + geom_point() + geom_line()  # connect all points?
+
+
+# color points and lines a specific color. note - the color fills in based on alphabetical ordering of the groups : (. Fills in lines 
+
+# base
+g1 <- g0 + 
+geom_point(aes(x = time.hr, y = M.a-M.blank), pch=1, color = 'lightgrey') +
+geom_point(aes(x = time.hr, y = M.b-M.blank), pch=2, color = 'grey') +
+
+# connected by lines
+geom_line(aes(x = time.hr, y = M.a-M.blank, color = 'M.a')) +
+geom_line(aes(x = time.hr, y = M.b-M.blank, color = 'M.b')) +
+
+# the color fills in based on alphabetical ordering of the groups : (
+# color
+scale_color_manual(values = c('grey', 'darkgrey')) + ...
+
+# manually color
+#  - can also link categorical factor levels (in a column) to a color value. For example,
+# if plotting a geom_point, with color specified by a column sigAlg, which has two factors, '0', and 'sigAlg' 
+# (significant in ALginate), then can use scale_color_manual to link the factors to colors
+mycolors2  <- c("sigAlg" = "#756bb1", "sigGlu" = "#de2d26", 'both' = "#c51b8a", 'white' = '#FFFFFF', '0'= "black")
+
+ggplot() +
+  geom_point(data=db, aes(x = resGlu.log2, y = resAlg.log2, color = sigAlg), size = 3, alpha = I(0.2)) + # color enables coloring by variable (or constant). The mycolors vector provides a hash for factor level = color, which is mapped on with 'scale_color_manual' ggplot option.
+  scale_color_manual(name = '', values = mycolors2)
+# make open circles
+g1 <- g0 + geom_point(shape = 1) + # shape = 1 is a circle
+scale_shape(solid = FALSE) + ...
+
+# weight color by value
+g1 <- g0 + geom_point(aes(color = cpm))
+
+# make transparent
+g1 <- g0 + geom_point(alpha = I(0.2))
+ 
+# use different linetypes ("blank", "solid", "dashed", "dotted", "dotdash", "longdash", and "twodash")
+g1 <- g0 + geom_line(linetype = 'dashed')
+
+# sort rows by column using 'order' (http://www.ats.ucla.edu/stat/r/faq/sort.htm)
+ordered_merged <- merged[order(merged$orig_order),] # negative, so it's highest to lowest (descending)
+ordered_df[1:15, ] # to check if ordered
+
+# graph with sample-type order desired (e.g. for facets)
+g0<-ggplot(transform(df.2216cam.c, sample.type = factor(sample.type, levels = c('m + 9ZC88', 'm + ZF91', 'm + 9ZC77', 'm + cras', '9ZC88', 'ZF91', '9ZC77', 'cras'))), aes(y=mean, x=time, color=sample.type, group = sample.type)) 
+
+# order by factor
+# Ex. sizes <- factor(sizes, levels = c("small", "medium", "large"))
+# sizes
+# data$Treatment <- as.character(data$Treatment)
+# data$Treatment <- factor(data$Treatment, levels=unique(data$Treatment))
+care.byrace.2011$variable <- as.character(care.byrace.2011$variable) #<< had to be as.character.
+care.byrace.2011$variable <- factor(care.byrace.2011$variable, levels = c('diagnosed.percent','received.care.percent','prescribed.art.percent','suppressed.percent'))
+
+# order x by y value
+# order the insertions (label) on the cpm (value)
+# The first will order things based on the order seen in the data frame:
+# x$variable <- factor(x$variable, levels=unique(as.character(x$variable)) )
+# The second orders the levels based on another variable (value in this case):
+#x <- transform(x, variable=reorder(variable, -value))
+df$x <- factor(df$x, levels=unique(as.character(df$x)))
+df <- transform(df, x = reorder(x, -y))
+
+# order this dataframe..
+df[with(df, order(insertion)), ]
+
+# note, sequence order of plotting geom-point(x, y) + geompoint(z, a) doesn't matter affect color order.
+
+# plot colored subset of values
+mycolours <- c("sig8" = "red", "nsig8" = "grey50") 
+ggplot(df) + 
+geom_point(aes(x = s8c, y = s1c, colour = genesigs8c), alpha = I(0.2)) +
+geom_point(aes(x = s8c, y = s1c), color = 'white', size = 3.5, subset = .(genesigs8c == 'sig8')) +
+geom_point(aes(x = s8c, y = s1c, color = genesigs8c), subset = .(genesigs8c == 'sig8'), alpha = I(0.4))
+
+# loop over multiple columns
+
+# error bars
+geom_errorbar(aes(ymin=len-sd, ymax=len+sd), width=.2,
+              position=position_dodge(.9)) 
+
+# Make list of variable names to loop over
+# (see 20150204 test loop over column data, ggplot.R)
+var_list = names(df)[6:16]
+# control input library
+x = 's1cpm'
+# Make plots.
+plot_list = list()
+for (i in 1:length(var_list)) {
+     p = ggplot(df, aes_string(x=x, y=var_list[i])) +
+        geom_point(size=1, aes(I=0.2)) + # hmm, can't get this part to work? ( )
+        theme_bw() +
+        # create easy to read log-scale breaks / labels with LIMITS, so looks good
+        scale_y_log10(breaks=c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6), limits=c(1e1, 1e5), labels=trans_format('log10',math_format(10^.x))) +
+        scale_x_log10(breaks=c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6), limits=c(1e1, 1e5), labels=trans_format('log10',math_format(10^.x))) +
+  	theme(
+    legend.key = element_blank(), # switch off the rectangle around symbols in the legend 
+    strip.background=element_blank(), #remove labels
+    panel.grid.minor = element_blank(), #remove minor gridlines
+    panel.grid.major = element_blank(), #remove major gridlines
+    aspect.ratio = 1 #adjust graph’s aspect ratio
+  )  
+    plot_list[[i]] = p
+}
+p
+
+
+#------- format cleanly-------
+# base
+g1 <- g0 + geom_point() +
+
+# use the black-and-white theme for a minimalist look
+theme_bw() + 
+
+# label x and y axes
+xlab("Input normalized counts") + 
+ylab("Output normalized counts") + 
+
+# split a long title for readability
+ylab('copies per cm2 (fucus) or per mL (liquid) 
+or per cm2 per mL (fucus + liquid)') +
+
+# create easy to read log-scale breaks / labels with LIMITS, so looks good
+scale_y_log10(breaks=c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9), limits=c(1e3, 1e8)
+, labels=trans_format('log10',math_format(10^.x))) +
+scale_x_log10(breaks=c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9), limits=c(1e3, 1e8), labels=trans_format('log10',math_format(10^.x))) +
+
+# # create easy to read log-scale breaks / labels
+# scale_y_log10(breaks=c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9), labels=trans_format('log10',math_format(10^.x))) +
+# scale_x_log10(breaks=c(1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9), labels=trans_format('log10',math_format(10^.x))) +
+
+  # make background blank
+  theme(
+    #axis.title.y=theme_text(size=10, hjust=-0.25), #size y-axis title
+    #legend.title=theme_text(size = 10, hjust = -1), #size legend title
+    #legend.text=theme_text(size = 8), #size legend text
+    legend.key = element_blank(), # switch off the rectangle around symbols in the legend 
+    #axis.title.x = element_blank(), #remove x axis title
+    #axis.title.y = element_blank(), #remove y axis title
+    #axis.text.x = element_blank(), #remove x axis text
+    #axis.text.y = element_blank(), #remove y axis text
+    #axis.ticks = element_blank(), #remove x axis tick marks
+    #strip.text.x = element_blank(), #remove text near x axis
+    #strip.text.y = element_blank(), #remove text near y axis
+    strip.background=element_blank(), #remove labels
+    panel.grid.minor = element_blank(), #remove minor gridlines
+    panel.grid.major = element_blank(), #remove major gridlines
+    panel.border = element_blank(), axis.line = element_line() # only axis lines
+    aspect.ratio = 1 #adjust graph’s aspect ratio
+  )
+
+
+
+# rotate text
+theme(
+axis.text.x=element_text(angle=90)
+)
+
+# plot same size plots
+# -- solution seems to be to use facetting
+# -- Was really insightful in general
+https://groups.google.com/forum/#!topic/ggplot2/fT91PIAZ6WA
+
+
+# save as pdf - plot normalized counts as dotplot
+png(file = "/Users/alimura/Downloads/sample.pdf",width=400,height=350, units='px')
+qplot(df$V2, df$V3) + scale_y_log10()
+dev.off()
+
+# save as pdf etc 
+# "ggsave currently recognises the extensions ps, tex (pictex), pdf, tiff, png, bmp and wmf (windows only)." .tiff is good for publication, is a raster image, and at least 300 DPI, but 600 to 1200 is better.
+ggsave(ratings, file="ratings.pdf", width=4, height=4)
+ggsave(barplot, file="/Users/alimura/Documents/Alison_Compare_genomes_beingorganized/20141030 cdhit w diana/20141104 get core, flex for cdhit files/20150210_core_distinct_output/20150222 subsystem counts core Pop 13, distinct from breo.tiff", dpi=600, width=16, height=27)
+
+
+#--query----
+
+# so much info!
+str(df)
+
+# column names
+colnames(df)
+names(df)
+
+# number of rows
+
+# sum
+
+# length
+length(df$column)
+
+#count number of rows that meet condition
+a  <- subset(newout, newout$Essentiality == 'Reduced')
+length(a$Essentiality)
+
+# is a condition true (by row)
+> genesUsed #(locusId's)
+[1]    2    4   61  119 3602
+> genesUsed %in% genes$locusId
+[1] TRUE TRUE TRUE TRUE TRUE
+
+# count number which are true
+> length(which(all_g2$f < 0.5))
+[1] 38
+
+# what categorical variables 
+> levels(InsectSprays$spray)
+[1] "A" "B" "C" "D" "E" "F"
+
+# update the number of levels for subsetted data
+df_nonessential$proteinid <- factor(df_nonessential$proteinid)
+
+# query a multilevel dataframe (like looking at lists within list)
+> names(fit)
+ [1] "g"           "lrRaw"       "sd"          "sumsq"      
+ [5] "sdNaive"     "n"           "nEff"        "tot"        
+ [9] "tot0"        "lr"          "lrNaive"     "lrn"        
+[13] "lr1"         "lr2"         "lrn1"        "lrn2"       
+[17] "tot1"        "tot1_0"      "tot2"        "tot2_0"     
+[21] "pseudovar"   "se"          "t"           "q"          
+[25] "genesUsed"   "strainsUsed" "genesUsed12" "t0_g2"      
+[29] "gN"          "t0_gN"       "strains"     "strain_lr"  
+[33] "strain_se"   "strain_lrn" 
+> names(fit$lrn)
+[1] "set1s2013_09_18_sample_2_t0hr_whole"     
+[2] "set1s2013_09_18_sample_3_t3hr_sup"       
+[3] "set1s2013_09_18_sample_4_t3hr_sonicated" 
+[4] "set1s2013_09_18_sample_5_t6hr_sup"       
+[5] "set1s2013_09_18_sample_6_t6hr_sonicated" 
+[6] "set1s2013_09_18_sample_7_t20hr_sup"      
+[7] "set1s2013_09_18_sample_8_t20hr_sonicated"
+> length(fit$lrn$set1s2013_09_18_sample_2)
+[1] 101
+
+# query a multilevel dataframe (like looking at lists within list) in another way
+> names(all_fit)
+[1] "set1s2013_09_18_sample_2_t0hr_whole"     
+[2] "set1s2013_09_18_sample_3_t3hr_sup"       
+[3] "set1s2013_09_18_sample_4_t3hr_sonicated" 
+[4] "set1s2013_09_18_sample_5_t6hr_sup"       
+[5] "set1s2013_09_18_sample_6_t6hr_sonicated" 
+[6] "set1s2013_09_18_sample_7_t20hr_sup"      
+[7] "set1s2013_09_18_sample_8_t20hr_sonicated"
+> names(all_fit[1])
+[1] "set1s2013_09_18_sample_2_t0hr_whole"
+> names(all_fit[[1]])
+ [1] "fitRaw"    "sd"        "sumsq"     "sdNaive"   "n"        
+ [6] "nEff"      "tot"       "tot0"      "fit"       "fitNaive" 
+[11] "locusId"   "fitnorm"   "fit1"      "fit2"      "fitnorm1" 
+[16] "fitnorm2"  "tot1"      "tot1_0"    "tot2"      "tot2_0"   
+[21] "pseudovar" "se"        "t"
+
+
+
+#---write out to file---
+write.table(df, file = "/Users/alimura/Downloads/2014-04-05 - geneids of interest - insertions more than 0.txt", quote = FALSE, row.names = FALSE, sep = "\t")
+
+# Create pdf where each page is a separate plot (stored in plot list)
+# (see 20150204 test loop over column data, ggplot.R)
+pdf("plots.pdf")
+for (i in 1:length(var_list)) {
+    print(plot_list[[i]])
+}
+dev.off()
+
+# Save as eps file
+# Save to .eps file
+setEPS()
+postscript(paste(pwd,infile,'.eps', sep='')) # where you paste together the name of the file with the new extension, .eps 
+# plot
+g1
+dev.off()
+
+#--- gen resources----
+http://www.r-bloggers.com/ggplot2-cheatsheet-for-visualizing-distributions/
+
+
+
+
+#******************************end alison's
+
+
+
+
+
+
+
+
+
+
+
+
+#Rmd setup stuff that comes with file (maybe useful - I've been deleting it, but I should probably learn it!)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
