@@ -10,8 +10,16 @@ Use this document to run examples from "The Book of R" so that I can do more int
 
 This lives in a git repository on the DBG Q drive under "Learn_R/" - so push it at the end of each day's progress!
 
-*** Do this at beginning of sessions in this workbook **
+** Do this at beginning of sessions in this workbook **
+Copy this to command line (get working directory in the right place - check console window header to make sure)
 setwd("Q:/Research/All_Projects_by_Species/Phacelia SPECIES/Phacelia_formosula/Phacelia formosula_abiotic/Modelling/Learn_R/")
+Clear out workspace
+```{r}
+rm(list = ls())
+```
+** End of warmup **
+
+
 
 #Section 1.2 Opening R for the first time (page 4)
 Customize the prompt?
@@ -177,6 +185,55 @@ gcinfo(TRUE)
 Then the book does a shoutout to RStudio
 it has a "direct-submission code editor"
 Might be nice to learn about standalone R code files sometime, in addition to this markdown way of working. 
-See Rstudio appendix (could work through that section soon)
+See Rstudio appendix (could work through that section soon). Also need to figure out knitting, to save these with results in them. Right now I'm using these Rmds to produce other files, but they aren't saving their work (no code output or plots save)
 
-left off at section 1.3 pg 11, Saving work and Exiting R. 
+left off at section 1.3 pg 11, Saving work and Exiting R (and picked up here 3-5-18)
+
+## Saving and Exiting R
+when you're done working, think about:
+1) R objects you've made
+2) R script files in editor
+
+You can save all objects (assigned) in current session to a 'workspace image' in a .Rdata
+In Rstudio GUI, this lives at:
+Session -> Save Workspace AS
+
+Loading a saved workspace is a way to pick up where you left off. 
+save.image() saves workspace image (code version)
+load() brings the .Rdata into the current workspace
+
+What's in active workspace?
+ls() shows all objects, variables and user-defined functions
+```{r}
+ls()
+```
+#quit R:
+```{r}
+q()
+```
+This brings up a dialog about saving.
+It asks if you want to save a workspace image - writes an unnamed .Rdata in current directory with workspace image.
+If there's an unnamed .Rdata in default working directory (on main gardens compter, dafault when you open Rstudio is ~/), 
+that workspace will be automatically opened when you start. It says what it did/where it got workspace image from in the console welcome.
+
+With the workspace .Rdata, R also saves a file with line-by-line history of commands - supports scrolling through past commands (.Rhistory)
+To see these, look at files in working directory, including invisibles, with this:
+```{r}
+dir(all.files = TRUE)
+
+```
+
+Save editor scripts at .R files (helps operating system connect them with R).
+Scripts more useful for saving work than workspace (can always re-run!)
+
+#Conventions 1.4.1 Coding
+Long lines can be split at commas in the middle of commands (without actually splitting line) with return, and they will be indented to the level of the opening parentheses of the relevant (split) command/function
+```{r}
+ordfac.vec <- factor(x = c("Small", "Large", "Large", "Regular", "Small"), 
+                     levels = c("Small", "Regular", "Large"), 
+                     ordered = TRUE)
+```
+
+Left off at 1.4.2 Conventions - Math and Equation References
+
+
